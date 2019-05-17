@@ -53,7 +53,7 @@ class UserController {
 
         };
 
-        fileReader.readAsDataURL(file);
+        //fileReader.readAsDataURL(file);
 
     }
     // metodo para pegar os elementos do formulario
