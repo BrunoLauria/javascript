@@ -19,8 +19,6 @@ class UserController {
 
             let values = this.getValues();
 
-            values.photo = "";
-
             this.getPhoto((content)=>{
 
                 values.photo = content;
@@ -53,16 +51,18 @@ class UserController {
 
         };
 
-        //fileReader.readAsDataURL(file);
+        fileReader.readAsDataURL(file);
 
     }
+
     // metodo para pegar os elementos do formulario
     getValues(){
 
             let user = {};
 
+
             // SPREAD recebe como parametro a variavel campo(field) e a segunda variavel é o indice(index que é 0)
-            [...this.formEl.elements].forEach(function (field, index) {
+            [...this.formEl.elements].forEach(function (field, index) { 
 
             if (field.name == "gender") {
 
