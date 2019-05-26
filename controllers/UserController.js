@@ -17,24 +17,46 @@ class UserController {
 
             event.preventDefault();
 
+            let btn = this.formEl.querySelector("[type=submit]");
+
+            //Desabilita o borão submit
+            btn.disabled = true;
+
             let values = this.getValues();
 
-            this.getPhoto((content)=>{
+            this.getPhoto().then(
+                (content)=> {
 
-                values.photo = content;
+                    values.photo = content;
 
-                this.addLine(values);
+                     this.addLine(values);
 
-            });
+                    //Limpa os campos do Formulario
+                     this.formEl.reset();
 
-                              
+                     //Habilita o botao submit
+                     btn.disabled = false;
+
+
+                }, 
+                (e)=> {
+
+                    console.error(e);
+
+                }
+            );
+
+                                            
          });
           
     }
 
-    getPhoto(callback){
+    getPhoto(){
 
-        let fileReader = new FileReader();
+
+        return new Promise((resolve, reject)=>{
+
+            let fileReader = new FileReader();
 
         let elements = [...this.formEl.elements].filter(item=> {
 
@@ -47,12 +69,25 @@ class UserController {
 
         fileReader.onload = () =>{
 
-            callback(fileReader.result);
+            resolve(fileReader.result);
 
         };
 
-        fileReader.readAsDataURL(file);
+        fileReader.onerror = (e)=> {
 
+            reject(e);
+
+        };
+
+        if(file){
+            fileReader.readAsDataURL(file);
+        }else {
+            resolve('dist/img/boxed-bg.jpg');
+        }    
+
+        });
+
+        
     }
 
     // metodo para pegar os elementos do formulario
@@ -67,12 +102,16 @@ class UserController {
             if (field.name == "gender") {
 
             // se o campo esta marcado (true automatico)
-            if (field.checked) {
+                if (field.checked) {
 
-                user[field.name] = field.value;
-            }
+                    user[field.name] = field.value;
+                }
 
-            } else {
+            } else if (field.name == 'admin'){
+
+                user[field.name] = field.checked;
+
+            }else {
 
                 user[field.name] = field.value;
 
@@ -98,15 +137,14 @@ class UserController {
 
             var tr = document.createElement("tr");
         
-            // Vai colocar um texto, ele é comando HTML que precisa ser interpretado
-            this.tableEl.innerHTML =
-            `<tr>
+            tr.innerHTML = 
+            `
                 <td>
                     <img src="${dataUser.photo}" alt="User Image" class="img-circle img-sm" />
                 </td>
                 <td>${dataUser.name}</td>
                 <td>${dataUser.email}</td>
-                <td>${dataUser.admin}</td>
+                <td>${(dataUser.admin) ? 'Sim' : 'Não'}</td>
                 <td>${dataUser.birth}</td>
                 <td>
                     <button type="button" class="btn btn-primary btn-xs btn-flat">
@@ -116,8 +154,12 @@ class UserController {
                     Excluir
                     </button>
                 </td>
-            </tr>`;
+            `;
         
+
+            // Vai colocar um texto, ele é comando HTML que precisa ser interpretado
+            this.tableEl.appendChild(tr); 
+            
         }
   
 }
