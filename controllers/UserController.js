@@ -19,7 +19,7 @@ class UserController {
 
             let btn = this.formEl.querySelector("[type=submit]");
 
-            //Desabilita o borão submit
+            //Desabilita o borão submit 
             btn.disabled = true;
 
             let values = this.getValues();
@@ -145,7 +145,7 @@ class UserController {
                 <td>${dataUser.name}</td>
                 <td>${dataUser.email}</td>
                 <td>${(dataUser.admin) ? 'Sim' : 'Não'}</td>
-                <td>${dataUser.birth}</td>
+                <td>${Utils.dateFormat(dataUser.register)}</td>
                 <td>
                     <button type="button" class="btn btn-primary btn-xs btn-flat">
                     Editar
